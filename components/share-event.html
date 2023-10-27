@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Share Event</title>
+    
+    <!-- Include the CSS links here (similar to your other HTML files) -->
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/vegas.min.css">
+    <link rel="stylesheet" href="../css/font-awesome.min.css">
+    <link rel="stylesheet" href="../css/templatemo-style.css">
+    
+    <style>
+        /* Define the style for the text */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        /* CSS for the "Get Ticket" button */
+#getTicketButton {
+    background-color: #007BFF; /* Background color */
+    color: #fff; /* Text color */
+    padding: 10px 20px; /* Padding inside the button */
+    border: none; /* Remove the button border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Change cursor to a hand on hover */
+    font-size: 16px; /* Text size */
+    text-align: center; /* Center-align the text */
+}
+
+/* CSS for button hover state (optional) */
+#getTicketButton:hover {
+    background-color: #0056b3; /* Change background color on hover */
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <div class="event-details">
+                    <h2>Event Details</h2>
+                    <!-- The event details will be displayed here using JavaScript -->
+                    <div id="event-details-container"></div>
+                    <div class="col-md-12 col-sm-12"></div>
+                    <button id="getTicketButton" class="btn btn-primary">Get Ticket</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+    <script>
+        // Initialize Firebase with your Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyDJdjvmdJeS7_WYMIHU-zv4b4Fc2D5s-Yo",
+            authDomain: "contact-form-7ec86.firebaseapp.com",
+            databaseURL: "https://contact-form-7ec86-default-rtdb.firebaseio.com",
+            projectId: "contact-form-7ec86",
+            storageBucket: "contact-form-7ec86.appspot.com",
+            messagingSenderId: "643370383331",
+            appId: "1:643370383331:web:61c6ca2a2f257b24ba92d6"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        // Initialize Firestore
+        var firestore = firebase.firestore();
+
+        // Function to get the event ID from the URL
+        function getEventIdFromUrl() {
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            return urlParams.get("id");
+        }
+
+        // Function to display event details
+        function displayEventDetails(event) {
+            var eventDetailsContainer = document.getElementById("event-details-container");
+            eventDetailsContainer.innerHTML = `
+                <div style="background-color: white; padding: 20px; border: 2px solid #333; border-radius: 10px;">
+                    <h3>${event.title}</h3>
+                    <p>Date: ${event.date}</p>
+                    <p>Time: ${event.time}</p>
+                    <p>Location: ${event.venue}</p>
+                </div>
+            `;
+        }
+
+        // Fetch and display the event details
+        var eventId = getEventIdFromUrl();
+        if (eventId) {
+            console.log("Event ID:", eventId); // Log the event ID for debugging
+            firestore.collection("EventsEts2u")
+                .doc(eventId)
+                .get()
+                .then(function(doc) {
+                    if (doc.exists) {
+                        var event = doc.data();
+                        console.log("Fetched Event Data:", event); // Log the event data for debugging
+                        displayEventDetails(event);
+                    } else {
+                        console.log("Event not found");
+                    }
+                })
+                .catch(function(error) {
+                    console.error("Error fetching event details: ", error);
+                });
+        }
+
+        // Get Ticket button click event
+        var getTicketButton = document.getElementById("getTicketButton");
+        getTicketButton.addEventListener("click", function() {
+            // Redirect to the "getTicket.html" page
+            window.location.href = "getTicket.html";
+        });
+    </script>
+
+    <!-- Include other JavaScript links (similar to your other HTML files) -->
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/vegas.min.js"></script>
+    <script src="../js/countdown.js"></script>
+    <script src="../js/init.js"></script>
+    <script src="../js/custom.js"></script>
+</body>
+</html>

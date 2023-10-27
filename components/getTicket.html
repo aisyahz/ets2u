@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Ticket</title>
+    <!-- Include the CSS links here (similar to your other HTML files) -->
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <div class="ticket-details">
+                    <h2>Your Ticket</h2>
+                    <!-- The ticket details will be displayed here using JavaScript -->
+                    <div id="ticket-details-container">
+                        <p>Save this link. This is your event ticket.</p>
+                        <div id="qr-code"></div>
+                        <p>ID: <span id="ticket-id"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get the QR code data and ticket ID from the URL query parameters
+        var urlParams = new URLSearchParams(window.location.search);
+        var qrCodeData = urlParams.get("qrCodeData");
+        var ticketId = urlParams.get("ticketId");
+
+        // Display the QR code and ticket ID
+        var qrCodeContainer = document.getElementById("qr-code");
+        var ticketIdContainer = document.getElementById("ticket-id");
+
+        // Create a function to display the QR code
+        function displayQRCode(data) {
+            var qrcode = new QRCode(qrCodeContainer, {
+                text: data,
+                width: 128,
+                height: 128,
+            });
+        }
+
+        // Display the QR code and ticket ID
+        displayQRCode(qrCodeData);
+        ticketIdContainer.textContent = ticketId;
+    </script>
+
+    <!-- Include other JavaScript links (similar to your other HTML files) -->
+</body>
+</html>

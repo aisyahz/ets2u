@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Event Details</title>
+    
+    <!-- Include the CSS links here (similar to your other HTML files) -->
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/vegas.min.css">
+    <link rel="stylesheet" href="../css/font-awesome.min.css">
+    <link rel="stylesheet" href="../css/templatemo-style.css">
+    
+    <style>
+        /* Define the style for the event details container */
+        .event-container {
+            border: 2px solid #333;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            background-color: white; /* White background color */
+        }
+         /* Define the style for the buttons */
+    .btn-minimalist {
+        background-color: transparent;
+        border: 1px solid #333;
+        color: #333;
+        padding: 5px 10px;
+        margin-right: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .btn-minimalist:hover {
+        background-color: #333;
+        color: #fff;}
+        
+    </style>
+</head>
+<body style="background-color: white;">
+    <!-- Background Image (if needed) -->
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <div class="event-details">
+                    <h2>Event Details</h2>
+                    <!-- The event details container -->
+                    <div class="event-container" id="event-details-container">
+                        <!-- Event details will be displayed here using JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+    <script>
+        // Initialize Firebase with your Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyDJdjvmdJeS7_WYMIHU-zv4b4Fc2D5s-Yo",
+            authDomain: "contact-form-7ec86.firebaseapp.com",
+            databaseURL: "https://contact-form-7ec86-default-rtdb.firebaseio.com",
+            projectId: "contact-form-7ec86",
+            storageBucket: "contact-form-7ec86.appspot.com",
+            messagingSenderId: "643370383331",
+            appId: "1:643370383331:web:61c6ca2a2f257b24ba92d6"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        // Initialize Firestore
+        var firestore = firebase.firestore();
+
+        // Function to get the event ID from the URL
+        function getEventIdFromUrl() {
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            return urlParams.get("id");
+        }
+
+        // Function to display event details
+        function displayEventDetails(event) {
+            var eventDetailsContainer = document.getElementById("event-details-container");
+            eventDetailsContainer.innerHTML = `
+            <!-- Event details will be displayed here using JavaScript -->
+<h3>${event.title}</h3>
+<p>${event.date} at ${event.time}</p>
+<p>${event.registeredParticipants} attendees registered / ${event.maxParticipants} max</p>
+<p>Modified: ${event.modified}</p>
+<button class="btn btn-minimalist" id="scan-button">Scan</button>
+<button class="btn btn-minimalist" id="share-button">Share</button>
+<button class="btn btn-minimalist" id="edit-button">Edit</button>
+            `;
+            
+            // Add event listeners for the buttons (scan, share, edit)
+            document.getElementById("scan-button").addEventListener("click", function() {
+    // Redirect to the "share-event.html" page with the event ID as a query parameter
+    var eventId = getEventIdFromUrl(); // Get the event ID
+    window.location.href = "scan-events.html?id=" + eventId;
+});
+
+document.getElementById("share-button").addEventListener("click", function() {
+    // Implement share functionality here
+    var eventId = getEventIdFromUrl(); // Get the event ID
+    window.location.href = `share-event.html?id=${eventId}`; // Use backticks to insert the eventId
+});
+            document.getElementById("edit-button").addEventListener("click", function() {
+                // Implement edit functionality here
+                alert("Edit button clicked");
+            });
+        }
+
+        // Fetch and display the event details
+        var eventId = getEventIdFromUrl();
+        if (eventId) {
+            firestore.collection("EventsEts2u")
+                .doc(eventId)
+                .get()
+                .then(function(doc) {
+                    if (doc.exists) {
+                        var event = doc.data();
+                        displayEventDetails(event);
+                    } else {
+                        console.log("Event not found");
+                    }
+                })
+                .catch(function(error) {
+                    console.error("Error fetching event details: ", error);
+                });
+        }
+    </script>
+
+    <!-- Include other JavaScript links (similar to your other HTML files) -->
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/vegas.min.js"></script>
+    <script src="../js/countdown.js"></script>
+    <script src="../js/init.js"></script>
+    <script src="../js/custom.js"></script>
+</body>
+</html>

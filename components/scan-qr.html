@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scan QR Code</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.3.1/dist/jsQR.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+</head>
+<body>
+    <h1>Scan QR Code</h1>
+    <div id="scanner-container">
+        <video id="qr-video" width="100%" height="100%" autoplay></video>
+    </div>
+    <button id="checkInButton">Check In</button>
+
+    <script>
+        // Initialize Firebase with your Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyDJdjvmdJeS7_WYMIHU-zv4b4Fc2D5s-Yo",
+            authDomain: "contact-form-7ec86.firebaseapp.com",
+            databaseURL: "https://contact-form-7ec86-default-rtdb.firebaseio.com",
+            projectId: "contact-form-7ec86",
+            storageBucket: "contact-form-7ec86.appspot.com",
+            messagingSenderId: "643370383331",
+            appId: "1:643370383331:web:61c6ca2a2f257b24ba92d6"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        // Initialize Firestore
+        var firestore = firebase.firestore();
+
+        const video = document.getElementById('qr-video');
+        const checkInButton = document.getElementById('checkInButton');
+
+        const constraints = {
+            video: { facingMode: 'environment' },
+            audio: false,
+        };
+
+        navigator.mediaDevices.getUserMedia(constraints)
+            .then(function (stream) {
+                video.srcObject = stream;
+            })
+            .catch(function (error) {
+                console.error('Error accessing the camera:', error);
+            });
+
+        // Event listener for the "Check In" button
+        checkInButton.addEventListener('click', function () {
+            // Implement your check-in logic here
+            alert('Attendee checked in!');
+        });
+
+        video.addEventListener('play', () => {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+
+            const scan = () => {
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+                if (code) {
+                    // QR code detected, insert data into Firestore
+                    insertDataIntoFirestore(code.data);
+                }
+
+                requestAnimationFrame(scan);
+            };
+
+            scan();
+        });
+
+        // Function to insert data into Firestore
+        function insertDataIntoFirestore(scannedData) {
+            // Assuming scannedData contains fields 'name,' 'id,' 'registered at,' and 'scan at'
+            const data = {
+                name: scannedData.name,
+                id: scannedData.id,
+                registeredAt: scannedData.registeredAt,
+                scanAt: new Date().toLocaleString(),
+            };
+
+            // Add data to 'checkinAttendance' collection
+            firestore.collection('checkinAttendance').add(data)
+                .then(function (docRef) {
+                    console.log('Data added to Firestore with ID: ', docRef.id);
+                })
+                .catch(function (error) {
+                    console.error('Error adding data to Firestore: ', error);
+                });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register Page</title>
+
+    <!-- Include the CSS links here -->
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/vegas.min.css">
+    <link rel="stylesheet" href="../css/font-awesome.min.css">
+    <link rel="stylesheet" href="../css/templatemo-style.css">
+</head>
+<body>
+    <!-- Background Image -->
+    <div class="overlay"></div>
+    <div class="background-image"></div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <div class="home-info">
+                    <h1>Register an Account</h1>
+                    <form id="register-form">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                        <br>
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" required>
+                        <br>
+                        <label for="confirm-password">Confirm Password:</label>
+                        <input type="password" id="confirm-password" name="confirm-password" required>
+                        <br>
+                        <input type="submit" value="Register">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+    <script>
+        // Initialize Firebase with your Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyDJdjvmdJeS7_WYMIHU-zv4b4Fc2D5s-Yo",
+            authDomain: "contact-form-7ec86.firebaseapp.com",
+            databaseURL: "https://contact-form-7ec86-default-rtdb.firebaseio.com",
+            projectId: "contact-form-7ec86",
+            storageBucket: "contact-form-7ec86.appspot.com",
+            messagingSenderId: "643370383331",
+            appId: "1:643370383331:web:61c6ca2a2f257b24ba92d6"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+
+        // Function to handle form submission for user registration
+        document.getElementById("register-form").addEventListener("submit", function (e) {
+            e.preventDefault();
+            var email = document.getElementById("email").value;
+            var password = document.getElementById("password").value;
+
+            // Firebase Authentication for user registration
+            firebase.auth().createUserWithEmailAndPassword(email, password)
+                .then(function (userCredential) {
+                    // Registration successful
+                    var user = userCredential.user;
+                    alert("Registration successful");
+
+                    // You can add the user's information to Firestore
+                    var db = firebase.firestore();
+                    db.collection("registerEts2u").add({
+                        email: email,
+                        // Add other user information as needed
+                    })
+                    .then(function (docRef) {
+                        console.log("Document written with ID: ", docRef.id);
+                    })
+                    .catch(function (error) {
+                        console.error("Error adding document: ", error);
+                    });
+
+                    // You can redirect to another page or perform other actions here.
+                })
+                .catch(function (error) {
+                    alert("Registration failed: " + error.message);
+                });
+        });
+    </script>
+
+    <!-- JavaScript links (similar to index.html) -->
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/vegas.min.js"></script>
+    <script src="../js/countdown.js"></script>
+    <script src="../js/init.js"></script>
+    <script src="../js/custom.js"></script>
+</body>
+</html>
